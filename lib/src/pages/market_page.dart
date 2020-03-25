@@ -89,9 +89,9 @@ class _MarketPageState extends State<MarketPage> {
                   rows: snapshot.data,
                   onRowFormat: (element) => <DataCell>[
                     DataCell(_getPrice(element.listing.price)),
-                    DataCell(Column(
+                    DataCell(SingleChildScrollView(child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: _getRunes(element.item.sockets))),
+                      children: _getSockets(element.item.sockets)))),
                     DataCell(SingleChildScrollView(child: Image.network(element.item.icon, scale: 1.4))),
                     DataCell(
                       Wrap(children: <Widget>[
@@ -114,12 +114,6 @@ class _MarketPageState extends State<MarketPage> {
               }
           }
         });
-  }
-
-  List<Widget> _getRunes(List<ItemSockets> sockets) {
-    return sockets.map((e) {
-      return Text("Group: ${e.group} - color: ${e.attr}");
-    }).toList();
   }
 
   List<Widget> _getMods(List<dynamic> mods) {
@@ -155,7 +149,30 @@ class _MarketPageState extends State<MarketPage> {
       ],
     );
   }
+
+  List<Widget> _getSockets(List<ItemSockets> sockets) {
+    Map<int, List<ItemSockets>> socketsMap = {};
+
+    sockets.forEach((element) {
+      List<ItemSockets> groupList = socketsMap[element.group];
+      if (groupList == null) {
+        socketsMap.putIfAbsent(element.group, () => [element]);
+      } else {
+        groupList.add(element);
+      }
+    });
+
+    return socketsMap.keys.map((e) => Column(
+      children: [Row(children: socketsMap[e].map((e) => Icon(Icons.swap_horizontal_circle, color: colors[e.attr])).toList())],
+    )).toList();
+  }
 }
+
+const Map<String, MaterialColor> colors = {
+  "I": Colors.blue,
+  "D": Colors.green,
+  "S": Colors.red
+};
 
 const Map<String, String> currencyMap = {
   "jew": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketNumbers.png?w=1&h=1&scale=1",
