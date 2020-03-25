@@ -85,18 +85,30 @@ class _MarketPageState extends State<MarketPage> {
               } else {
                 //return _createListView(context, snapshot);
                 return DynamicDataTableComponent<ItemSearchResult>(
-                  tableHeaders: <String>["Price", "Item", "Name", "Properties"],
+                  tableHeaders: <String>["Price", "Sockets", "Item", "Name", "Requirements", "Properties", "Mods"],
                   rows: snapshot.data,
                   onRowFormat: (element) => <DataCell>[
                     DataCell(_getPrice(element.listing.price)),
-                    DataCell(Image.network(element.item.icon, scale: 1.4)),
+                    DataCell(Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _getRunes(element.item.sockets))),
+                    DataCell(SingleChildScrollView(child: Image.network(element.item.icon, scale: 1.4))),
                     DataCell(
                       Wrap(children: <Widget>[
+                        element.item.corrupted != null ? Text("Corrupted", style: TextStyle(color: Colors.red),) : Text(""),
                         Text("${element.item.typeLine} ${element.item.name}")
                       ], direction: Axis.vertical)
                     ),
-                    DataCell(Column(
-                        children: _getProperties(element.item.properties)))
+                    DataCell(SingleChildScrollView(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _getProperties(element.item.requirements)))),
+                    DataCell(SingleChildScrollView(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _getProperties(element.item.properties)))),
+                    DataCell(SingleChildScrollView(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _getMods(element.item.explicitMods))))
                   ],
                 );
               }
@@ -104,15 +116,30 @@ class _MarketPageState extends State<MarketPage> {
         });
   }
 
+  List<Widget> _getRunes(List<ItemSockets> sockets) {
+    return sockets.map((e) {
+      return Text("Group: ${e.group} - color: ${e.attr}");
+    }).toList();
+  }
+
+  List<Widget> _getMods(List<dynamic> mods) {
+    if (mods == null || mods.isEmpty) {
+      return <Widget>[Text("-")];
+    }
+    return mods.map((e) => Text(e.trim())).toList();
+  }
+
   List<Widget> _getProperties(List<ItemProperty> properties) {
     if (properties.isEmpty) {
-      return <Widget>[Text("no properties")];
+      return <Widget>[Text("-")];
     }
     return properties
         .map((e) => Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text("${e.name}: "),
-                Text("${e.values.join(",")}")
+                Text("${e.name.trim()}: "),
+                Text("${e.values.isEmpty ? "" : e.values[0][0].toString().trim()}")
               ],
             ))
         .toList();
@@ -134,5 +161,7 @@ const Map<String, String> currencyMap = {
   "jew": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketNumbers.png?w=1&h=1&scale=1",
   "chance": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeRandomly.png?w=1&h=1&scale=1",
   "alch": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeToRare.png?w=1&h=1&scale=1",
-  "chaos": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?w=1&h=1&scale=1"
+  "chaos": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?w=1&h=1&scale=1",
+  "chisel": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyMapQuality.png?w=1&h=1&scale=1",
+  "exa": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToRare.png?w=1&h=1&scale=1"
 };

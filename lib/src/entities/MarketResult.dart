@@ -86,8 +86,9 @@ class Item {
   List<ItemProperty> properties;
   List<ItemProperty> requirements;
   List<dynamic> explicitMods;
+  bool corrupted;
 
-  Item({this.typeLine, this.name, this.icon, this.sockets, this.identified, this.ilvl, this.properties, this.requirements, this.explicitMods});
+  Item({this.typeLine, this.name, this.icon, this.sockets, this.identified, this.ilvl, this.properties, this.requirements, this.explicitMods, this.corrupted});
 
   factory Item.fromJson(Map<String, dynamic> parsedJson) {
     return Item(
@@ -99,7 +100,8 @@ class Item {
       properties: ItemProperty.fromJson(parsedJson["properties"]),
       requirements: ItemProperty.fromJson(parsedJson["requirements"]),
       explicitMods: parsedJson["explicitMods"],
-      sockets: ItemSockets.fromJson(parsedJson["sockets"])
+      sockets: ItemSockets.fromJson(parsedJson["sockets"]),
+      corrupted: parsedJson["corrupted"],
     );
   }
 
