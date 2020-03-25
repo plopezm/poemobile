@@ -1,0 +1,15 @@
+{
+  "pageTitle": "Home",
+  "options": [
+    {
+      "title": "Currency Status",
+      "icon": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1",
+      "route": "/currency"
+    },
+    {
+      "title": "Market",
+      "icon": "https://web.poecdn.com/image/Art/2DItems/Armours/Boots/BootsStr4.png?scale=1&w=1&h=1",
+      "route": "/market"
+    }
+  ]
+}
