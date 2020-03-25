@@ -15,6 +15,8 @@ class MarketPage extends StatefulWidget {
 class _MarketPageState extends State<MarketPage> {
   MarketRepository marketRepository = Injector().marketRepository;
 
+  String itemName;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +26,9 @@ class _MarketPageState extends State<MarketPage> {
           IconButton(
             icon: Icon(Icons.search),
             color: Colors.white,
-            onPressed: () {},
+            onPressed: () {
+              this.setState(() { });
+            },
           )
         ],
       ),
@@ -38,6 +42,9 @@ class _MarketPageState extends State<MarketPage> {
                     children: <Widget>[
                       TextField(
                         decoration: InputDecoration(labelText: "Item name"),
+                        onChanged: (value) {
+                          this.itemName = value;
+                        },
                       )
                     ],
                   ),
@@ -59,6 +66,7 @@ class _MarketPageState extends State<MarketPage> {
         future: this.marketRepository.fetchItem(
             query: PoeMarketQuery(
                 query: PoeMarketQuerySpec(
+                  term: this.itemName,
                   status: PoeMarketQueryStatus(option: "online"),
                   stats: <PoeMarketFilter>[
                     PoeMarketFilter(
@@ -77,10 +85,11 @@ class _MarketPageState extends State<MarketPage> {
               } else {
                 //return _createListView(context, snapshot);
                 return DynamicDataTableComponent<ItemSearchResult>(
-                  tableHeaders: <String>["Item", "Name", "Properties"],
+                  tableHeaders: <String>["Price", "Item", "Name", "Properties"],
                   rows: snapshot.data,
                   onRowFormat: (element) => <DataCell>[
-                    DataCell(Image.network(element.item.icon, scale: 2)),
+                    DataCell(_getPrice(element.listing.price)),
+                    DataCell(Image.network(element.item.icon, scale: 1.4)),
                     DataCell(
                       Wrap(children: <Widget>[
                         Text("${element.item.typeLine} ${element.item.name}")
@@ -108,4 +117,22 @@ class _MarketPageState extends State<MarketPage> {
             ))
         .toList();
   }
+
+  Widget _getPrice(ListingPrice listingPrice) {
+    final String imageUrl = currencyMap[listingPrice.currency];
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        imageUrl == null ? Text(listingPrice.currency) : Image.network(imageUrl),
+        Text("${listingPrice.amount}x"),
+      ],
+    );
+  }
 }
+
+const Map<String, String> currencyMap = {
+  "jew": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketNumbers.png?w=1&h=1&scale=1",
+  "chance": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeRandomly.png?w=1&h=1&scale=1",
+  "alch": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeToRare.png?w=1&h=1&scale=1",
+  "chaos": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?w=1&h=1&scale=1"
+};

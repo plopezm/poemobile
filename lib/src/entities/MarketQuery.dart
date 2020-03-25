@@ -14,22 +14,26 @@ class PoeMarketQuery {
 
 class PoeMarketQuerySpec {
   PoeMarketQueryStatus status;
+  String term;
   String name;
   String type;
   List<PoeMarketFilter> stats;
 
-  PoeMarketQuerySpec({this.status, this.name, this.type, this.stats});
+  PoeMarketQuerySpec({this.status, this.term, this.name, this.type, this.stats});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {
       'status': status.toJson(),
       'stats': stats.map((e) => e.toJson()).toList(),
     };
-    if (name != null) {
+    if (name != null && name.isNotEmpty) {
       json.putIfAbsent('name', () => name);
     }
-    if (type != null) {
+    if (type != null && name.isNotEmpty) {
       json.putIfAbsent('type', () => type);
+    }
+    if (term != null && term.isNotEmpty) {
+      json.putIfAbsent('term', () => term);
     }
     return json;
   }
