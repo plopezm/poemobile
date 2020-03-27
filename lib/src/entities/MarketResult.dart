@@ -61,7 +61,7 @@ class ListingAccount {
 
 class ListingPrice {
   String type;
-  int amount;
+  String amount;
   String currency;
 
   ListingPrice({this.type, this.amount, this.currency});
@@ -71,7 +71,7 @@ class ListingPrice {
       return null;
     }
     return ListingPrice(
-      amount: parsedJson["amount"],
+      amount: parsedJson["amount"].toString(),
       currency: parsedJson["currency"],
       type: parsedJson["type"],
     );

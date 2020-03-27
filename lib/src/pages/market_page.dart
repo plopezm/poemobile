@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+import 'file:///C:/Users/pablolm/AndroidStudioProjects/poe_mobile/lib/src/pages/poe_filter_page.dart';
 import 'package:poemobile/src/components/poe_item_list.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
@@ -38,6 +39,18 @@ class _MarketPageState extends State<MarketPage> {
       appBar: AppBar(
         title: Text("Market"),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.format_list_bulleted),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => new PoeFilterPage(query: this.query,onQueryChange: (query) {
+                  this.query = query;
+                  this.setState(() { });
+                }),
+              ));
+            },
+          ),
           IconButton(
             icon: Icon(Icons.search),
             color: Colors.white,
@@ -114,8 +127,7 @@ class _MarketPageState extends State<MarketPage> {
 
   void _onPictureInfo(VisionText vt) {
     PoePictureItem pictureItem = PoePictureItem(vt);
-    this.searchTerm.text =
-    "${pictureItem.title} ${pictureItem.subtitle}";
+    this.searchTerm.text = "${pictureItem.title} ${pictureItem.subtitle == null ? "" : pictureItem.subtitle}".trim();
     setState(() {});
   }
 }

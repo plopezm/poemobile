@@ -24,6 +24,10 @@ class MarketRepositoryImpl extends MarketRepository {
     final parsedIndexResult = json.decode(response.body);
     _IndexResult indexResult = _IndexResult.fromJson(parsedIndexResult);
 
+    if (indexResult.total == 0) {
+      return ItemSearchResult.listFromJson([]);
+    }
+
     // Getting real info
     int end = offset + size;
     String idsToFetch = indexResult.result
