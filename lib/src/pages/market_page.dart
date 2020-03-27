@@ -1,9 +1,12 @@
+import 'package:camera/camera.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'package:poemobile/src/components/data_table.dart';
-import 'package:poemobile/src/components/item_list.dart';
+import 'package:poemobile/src/components/poe_item_list.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
-import 'package:poemobile/src/entities/MarketResult.dart';
+import 'package:poemobile/src/entities/PoePictureItem.dart';
+import 'package:poemobile/src/pages/camera_page.dart';
+import 'package:poemobile/src/providers/ml_scanner_utils.dart';
 import 'package:poemobile/src/repositories/MarketRepository.dart';
 
 class MarketPage extends StatefulWidget {
@@ -16,7 +19,26 @@ class MarketPage extends StatefulWidget {
 class _MarketPageState extends State<MarketPage> {
   MarketRepository marketRepository = Injector().marketRepository;
 
-  String itemName;
+  // For searcher
+  TextEditingController searchTerm = TextEditingController(text: "");
+
+  void _initializeCamera() async {
+    final CameraDescription description =
+        await ScannerUtils.getCamera(CameraLensDirection.back);
+
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MLCameraCatcher(
+                  camera: description,
+                  onPictureTaken: (VisionText vt) {
+                    PoePictureItem pictureItem = PoePictureItem(vt);
+                    this.searchTerm.text =
+                        "${pictureItem.title} ${pictureItem.subtitle}";
+                    setState(() {});
+                  },
+                )));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +50,19 @@ class _MarketPageState extends State<MarketPage> {
             icon: Icon(Icons.search),
             color: Colors.white,
             onPressed: () {
-              this.setState(() { });
+              this.setState(() {});
             },
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.camera_alt),
+        onPressed: () {
+          this._initializeCamera();
+        },
+      ),
       body: new Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
           child: Center(
             child: RefreshIndicator(
               child: Column(
@@ -42,10 +70,8 @@ class _MarketPageState extends State<MarketPage> {
                   Column(
                     children: <Widget>[
                       TextField(
-                        decoration: InputDecoration(labelText: "Item name"),
-                        onChanged: (value) {
-                          this.itemName = value;
-                        },
+                        controller: this.searchTerm,
+                        decoration: InputDecoration(labelText: "Search"),
                       )
                     ],
                   ),
@@ -67,7 +93,7 @@ class _MarketPageState extends State<MarketPage> {
         future: this.marketRepository.fetchItem(
             query: PoeMarketQuery(
                 query: PoeMarketQuerySpec(
-                  term: this.itemName,
+                  term: this.searchTerm.text,
                   status: PoeMarketQueryStatus(option: "online"),
                   stats: <PoeMarketFilter>[
                     PoeMarketFilter(
@@ -79,13 +105,14 @@ class _MarketPageState extends State<MarketPage> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return new Container(child: Text('Loading...'), padding: EdgeInsets.all(12.0));
+              return new Container(
+                  child: Text('Loading...'), padding: EdgeInsets.all(12.0));
             default:
               if (snapshot.hasError) {
                 return new Text('Error: ${snapshot.error}');
               } else {
                 //return _createListView(context, snapshot);
-                return Container(child: ItemListComponent(snapshot.data));
+                return Container(child: PoeItemListComponent(snapshot.data));
               }
           }
         });

@@ -67,6 +67,9 @@ class ListingPrice {
   ListingPrice({this.type, this.amount, this.currency});
 
   factory ListingPrice.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
     return ListingPrice(
       amount: parsedJson["amount"],
       currency: parsedJson["currency"],

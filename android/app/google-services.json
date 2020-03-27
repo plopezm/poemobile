@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "497232778507",
+    "firebase_url": "https://poemobile-ee87c.firebaseio.com",
+    "project_id": "poemobile-ee87c",
+    "storage_bucket": "poemobile-ee87c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497232778507:android:73d172a33ca5960aa9be0e",
+        "android_client_info": {
+          "package_name": "com.aeox.poemobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497232778507-tsnonr4hqhl3dsomvuu6dmc18l58p287.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6onYQ5nSJhqYPirjL55o0aGJ1lvcbFFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497232778507-tsnonr4hqhl3dsomvuu6dmc18l58p287.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

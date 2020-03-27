@@ -27,6 +27,10 @@ dependencies:
   # To perform http requests
   http: ^0.12.0+4
 
+  # ML Text recognition
+  camera: ^0.5.7
+  firebase_ml_vision: ^0.9.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

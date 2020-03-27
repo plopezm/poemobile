@@ -13,18 +13,18 @@ const Map<String, String> currencyMap = {
   "jew": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketNumbers.png?w=1&h=1&scale=1",
   "chance": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeRandomly.png?w=1&h=1&scale=1",
   "alch": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeToRare.png?w=1&h=1&scale=1",
-  "chaos": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?w=1&h=1&scale=1",
+  "chaos": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?w=1&h=1&scale=1&v=c60aa876dd6bab31174df91b1da1b4f9",
   "chisel": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyMapQuality.png?w=1&h=1&scale=1",
   "exa": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToRare.png?w=1&h=1&scale=1",
   "chrom": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketColours.png?w=1&h=1&scale=1",
   "alt": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollMagic.png?w=1&h=1&scale=1"
 };
 
-class ItemListComponent extends StatelessWidget {
+class PoeItemListComponent extends StatelessWidget {
 
   final List<ItemSearchResult> result;
 
-  const ItemListComponent(this.result);
+  const PoeItemListComponent(this.result);
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +82,9 @@ class ItemListComponent extends StatelessWidget {
   }
 
   Widget _getPrice(ListingPrice listingPrice) {
+    if (listingPrice == null) {
+      return Text("Not found");
+    }
     final String imageUrl = currencyMap[listingPrice.currency];
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
