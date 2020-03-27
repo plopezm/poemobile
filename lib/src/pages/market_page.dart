@@ -21,24 +21,16 @@ class _MarketPageState extends State<MarketPage> {
 
   // For searcher
   TextEditingController searchTerm = TextEditingController(text: "");
-
-  void _initializeCamera() async {
-    final CameraDescription description =
-        await ScannerUtils.getCamera(CameraLensDirection.back);
-
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MLCameraCatcher(
-                  camera: description,
-                  onPictureTaken: (VisionText vt) {
-                    PoePictureItem pictureItem = PoePictureItem(vt);
-                    this.searchTerm.text =
-                        "${pictureItem.title} ${pictureItem.subtitle}";
-                    setState(() {});
-                  },
-                )));
-  }
+  PoeMarketQuery query = PoeMarketQuery(
+      query: PoeMarketQuerySpec(
+        term: "",
+        status: PoeMarketQueryStatus(option: "online"),
+        stats: <PoeMarketStatsFilter>[
+          PoeMarketStatsFilter(
+              type: "and", filters: <PoeMarketStatsFilterSpec>[])
+        ],
+      ),
+      sort: PoeMarketQuerySort(price: "asc"));
 
   @override
   Widget build(BuildContext context) {
@@ -87,20 +79,9 @@ class _MarketPageState extends State<MarketPage> {
           )),
     );
   }
-
   FutureBuilder _getFutureBuilder() {
     return FutureBuilder(
-        future: this.marketRepository.fetchItem(
-            query: PoeMarketQuery(
-                query: PoeMarketQuerySpec(
-                  term: this.searchTerm.text,
-                  status: PoeMarketQueryStatus(option: "online"),
-                  stats: <PoeMarketFilter>[
-                    PoeMarketFilter(
-                        type: "and", filters: <PoeMarketFilterSpec>[])
-                  ],
-                ),
-                sort: PoeMarketQuerySort(price: "asc"))),
+        future: this.marketRepository.fetchItem(this.searchTerm.text, query: query),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -116,5 +97,25 @@ class _MarketPageState extends State<MarketPage> {
               }
           }
         });
+  }
+
+  void _initializeCamera() async {
+    final CameraDescription description =
+    await ScannerUtils.getCamera(CameraLensDirection.back);
+
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MLCameraCatcher(
+              camera: description,
+              onPictureTaken: _onPictureInfo,
+            )));
+  }
+
+  void _onPictureInfo(VisionText vt) {
+    PoePictureItem pictureItem = PoePictureItem(vt);
+    this.searchTerm.text =
+    "${pictureItem.title} ${pictureItem.subtitle}";
+    setState(() {});
   }
 }
