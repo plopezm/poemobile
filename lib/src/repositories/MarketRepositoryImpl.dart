@@ -8,8 +8,9 @@ import 'package:poemobile/src/repositories/MarketRepository.dart';
 
 class MarketRepositoryImpl extends MarketRepository {
   @override
-  Future<List<ItemSearchResult>> fetchItem(
+  Future<List<ItemSearchResult>> fetchItem(String term,
       {@required PoeMarketQuery query, int offset = 0, int size = 10}) async {
+    query.query.term = term;
     // Getting indexes
     String queryJson = json.encode(query.toJson());
     http.Response response = await http.post(
@@ -22,6 +23,10 @@ class MarketRepositoryImpl extends MarketRepository {
     }
     final parsedIndexResult = json.decode(response.body);
     _IndexResult indexResult = _IndexResult.fromJson(parsedIndexResult);
+
+    if (indexResult.total == 0) {
+      return ItemSearchResult.listFromJson([]);
+    }
 
     // Getting real info
     int end = offset + size;

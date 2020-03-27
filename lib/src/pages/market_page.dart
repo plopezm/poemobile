@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+import 'file:///C:/Users/pablolm/AndroidStudioProjects/poe_mobile/lib/src/pages/poe_filter_page.dart';
 import 'package:poemobile/src/components/poe_item_list.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
@@ -21,24 +22,16 @@ class _MarketPageState extends State<MarketPage> {
 
   // For searcher
   TextEditingController searchTerm = TextEditingController(text: "");
-
-  void _initializeCamera() async {
-    final CameraDescription description =
-        await ScannerUtils.getCamera(CameraLensDirection.back);
-
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MLCameraCatcher(
-                  camera: description,
-                  onPictureTaken: (VisionText vt) {
-                    PoePictureItem pictureItem = PoePictureItem(vt);
-                    this.searchTerm.text =
-                        "${pictureItem.title} ${pictureItem.subtitle}";
-                    setState(() {});
-                  },
-                )));
-  }
+  PoeMarketQuery query = PoeMarketQuery(
+      query: PoeMarketQuerySpec(
+        term: "",
+        status: PoeMarketQueryStatus(option: "online"),
+        stats: <PoeMarketStatsFilter>[
+          PoeMarketStatsFilter(
+              type: "and", filters: <PoeMarketStatsFilterSpec>[])
+        ],
+      ),
+      sort: PoeMarketQuerySort(price: "asc"));
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +39,18 @@ class _MarketPageState extends State<MarketPage> {
       appBar: AppBar(
         title: Text("Market"),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.format_list_bulleted),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => new PoeFilterPage(query: this.query,onQueryChange: (query) {
+                  this.query = query;
+                  this.setState(() { });
+                }),
+              ));
+            },
+          ),
           IconButton(
             icon: Icon(Icons.search),
             color: Colors.white,
@@ -87,20 +92,9 @@ class _MarketPageState extends State<MarketPage> {
           )),
     );
   }
-
   FutureBuilder _getFutureBuilder() {
     return FutureBuilder(
-        future: this.marketRepository.fetchItem(
-            query: PoeMarketQuery(
-                query: PoeMarketQuerySpec(
-                  term: this.searchTerm.text,
-                  status: PoeMarketQueryStatus(option: "online"),
-                  stats: <PoeMarketFilter>[
-                    PoeMarketFilter(
-                        type: "and", filters: <PoeMarketFilterSpec>[])
-                  ],
-                ),
-                sort: PoeMarketQuerySort(price: "asc"))),
+        future: this.marketRepository.fetchItem(this.searchTerm.text, query: query),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -116,5 +110,24 @@ class _MarketPageState extends State<MarketPage> {
               }
           }
         });
+  }
+
+  void _initializeCamera() async {
+    final CameraDescription description =
+    await ScannerUtils.getCamera(CameraLensDirection.back);
+
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MLCameraCatcher(
+              camera: description,
+              onPictureTaken: _onPictureInfo,
+            )));
+  }
+
+  void _onPictureInfo(VisionText vt) {
+    PoePictureItem pictureItem = PoePictureItem(vt);
+    this.searchTerm.text = "${pictureItem.title} ${pictureItem.subtitle == null ? "" : pictureItem.subtitle}".trim();
+    setState(() {});
   }
 }

@@ -18,6 +18,10 @@ class PoePictureItem {
             this.title = line.text;
             break;
           case 1:
+            if (line.text.toLowerCase().contains("stack size")) {
+              i++;
+              return;
+            }
             this.subtitle = line.text;
             break;
         }
