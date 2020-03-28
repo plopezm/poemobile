@@ -77,14 +77,21 @@ class PoeMarketStatsFilter {
 class PoeMarketStatsFilterSpec {
   String id;
   PoeMarketStatsFilterSpecValue value;
+  String text;
   bool disabled;
 
-  PoeMarketStatsFilterSpec({this.id, this.value, this.disabled});
+  PoeMarketStatsFilterSpec({this.id, this.value, this.disabled, this.text});
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'value': value.toJson(),
-      };
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> result = {
+      'id': id,
+      'disabled': disabled == null ? false : disabled
+    };
+    if (!value.isEmpty()) {
+      result.putIfAbsent("value", () => value.toJson());
+    }
+    return result;
+  }
 }
 
 class PoeMarketStatsFilterSpecValue {
@@ -93,10 +100,14 @@ class PoeMarketStatsFilterSpecValue {
 
   PoeMarketStatsFilterSpecValue({this.min, this.max});
 
-  Map<String, dynamic> toJson() => {
-        'min': min,
-        'max': max,
-      };
+  Map<String, dynamic> toJson() =>{
+      'min': min,
+      'max': max,
+  };
+
+  bool isEmpty() {
+    return min == 0 && max == 0;
+  }
 }
 
 class PoeMarketQuerySort {

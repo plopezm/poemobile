@@ -4,15 +4,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:poemobile/src/entities/MarketQuery.dart';
 import 'package:poemobile/src/entities/MarketResult.dart';
+import 'package:poemobile/src/entities/Stats.dart';
 import 'package:poemobile/src/repositories/MarketRepository.dart';
 
 class MarketRepositoryImpl extends MarketRepository {
+  List<Stats> cachedStats;
+
   @override
   Future<List<ItemSearchResult>> fetchItem(String term,
       {@required PoeMarketQuery query, int offset = 0, int size = 10}) async {
     query.query.term = term;
     // Getting indexes
     String queryJson = json.encode(query.toJson());
+    print("Sending queryJson: $queryJson");
     http.Response response = await http.post(
         'https://www.pathofexile.com/api/trade/search/Delirium',
         body: queryJson,
@@ -42,6 +46,24 @@ class MarketRepositoryImpl extends MarketRepository {
     }
     final parsedResult = json.decode(response.body);
     return ItemSearchResult.listFromJson(parsedResult["result"]);
+  }
+
+  @override
+  Future<List<Stats>> fetchStats() async {
+    if (cachedStats != null) {
+      return cachedStats;
+    }
+
+    http.Response response = await http.get(
+        'https://www.pathofexile.com/api/trade/data/stats',
+        headers: <String, String>{"Content-Type": "application/json"});
+    if (response.statusCode != 200) {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed getting results: ${response.body}');
+    }
+    final parsedResult = json.decode(response.body);
+    cachedStats = Stats.listFromJson(parsedResult["result"]);
+    return Future.value(cachedStats);
   }
 }
 

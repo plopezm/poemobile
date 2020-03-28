@@ -42,9 +42,9 @@ class _MarketPageState extends State<MarketPage> {
           IconButton(
             icon: Icon(Icons.format_list_bulleted),
             color: Colors.white,
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => new PoeFilterPage(query: this.query,onQueryChange: (query) {
+            onPressed: () async {
+              await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => new PoeFilterPage(marketQuery: this.query, onQueryChange: (query) {
                   this.query = query;
                   this.setState(() { });
                 }),
