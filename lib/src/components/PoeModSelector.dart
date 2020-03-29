@@ -68,7 +68,6 @@ class _PoeModSelectorState extends State<PoeModSelector> {
               return ListTile(
                 title: Text("${entry.text}"),
                 onTap: () {
-                  print("${entry.id}");
                   setState(() {
                     this.selectedEntries.add(PoeMarketStatsFilterSpec(
                         id: entry.id,
@@ -91,6 +90,10 @@ class _PoeModSelectorState extends State<PoeModSelector> {
   Widget _getSelectedMods() {
     return Wrap(
       children: this.selectedEntries.map((entry) {
+          if (entry.id == "") {
+            return null;
+          }
+
           TextEditingController min = TextEditingController(text: "${entry.value.min}");
           TextEditingController max = TextEditingController(text: "${entry.value.max}");
 

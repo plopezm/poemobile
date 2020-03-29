@@ -126,8 +126,12 @@ class _MarketPageState extends State<MarketPage> {
   }
 
   void _onPictureInfo(VisionText vt) {
-    PoePictureItem pictureItem = PoePictureItem(vt);
-    this.searchTerm.text = "${pictureItem.title} ${pictureItem.subtitle == null ? "" : pictureItem.subtitle}".trim();
-    setState(() {});
+    this.marketRepository.fetchStats().then((entries) {
+      PoePictureItem pictureItem = PoePictureItem(entries, vt);
+      this.searchTerm.text = "${pictureItem.title} ${pictureItem.subtitle == null ? "" : pictureItem.subtitle}".trim();
+      this.query.query.stats.first.filters.clear();
+      this.query.query.stats.first.filters.addAll(pictureItem.mods);
+      setState(() {});
+    });
   }
 }
