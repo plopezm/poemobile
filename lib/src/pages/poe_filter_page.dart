@@ -70,9 +70,11 @@ class PoeFilterPage extends StatelessWidget {
               return new Text('Error: ${snapshot.error}');
             } else {
               final List<StatsEntry> statsEntries = (snapshot.data as List<Stats>).expand((stat) => stat.entries).toList();
+              final initialEntries = this.marketQuery.query.stats.isNotEmpty ? this.marketQuery.query.stats.first.filters : [];
               return new Container(
                 child: PoeModSelector(
                   statsEntries: statsEntries,
+                  selectedEntries: initialEntries,
                   onChange: (List<PoeMarketStatsFilterSpec> updatedEntries) {
                     this.marketQuery.query.stats.clear();
                     this.marketQuery.query.stats.add(PoeMarketStatsFilter(

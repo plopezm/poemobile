@@ -100,10 +100,16 @@ class PoeMarketStatsFilterSpecValue {
 
   PoeMarketStatsFilterSpecValue({this.min, this.max});
 
-  Map<String, dynamic> toJson() =>{
-      'min': min,
-      'max': max,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> result = {};
+    if (min>0) {
+      result.putIfAbsent("min", () => min);
+    }
+    if (max>0) {
+      result.putIfAbsent("max", () => max);
+    }
+    return result;
+  }
 
   bool isEmpty() {
     return min == 0 && max == 0;

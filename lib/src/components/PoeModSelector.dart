@@ -5,10 +5,11 @@ import 'package:poemobile/src/entities/Stats.dart';
 
 class PoeModSelector extends StatefulWidget {
 
+  final List<PoeMarketStatsFilterSpec> selectedEntries;
   final List<StatsEntry> statsEntries;
   final Function(List<PoeMarketStatsFilterSpec> statsEntries) onChange;
 
-  PoeModSelector({@required this.statsEntries, @required this.onChange});
+  PoeModSelector({@required this.statsEntries, @required this.onChange, this.selectedEntries});
 
   @override
   State<StatefulWidget> createState() {
@@ -17,11 +18,22 @@ class PoeModSelector extends StatefulWidget {
 }
 
 class _PoeModSelectorState extends State<PoeModSelector> {
-  List<PoeMarketStatsFilterSpec> selectedEntries = [];
   final TextEditingController searcher = new TextEditingController(text: "");
   final TextEditingController min = new TextEditingController(text: "");
   final TextEditingController max = new TextEditingController(text: "");
+  List<PoeMarketStatsFilterSpec> selectedEntries = [];
 
+  @override
+  void initState() {
+    if (widget.selectedEntries != null) {
+      // TODO: fill state list
+      this.selectedEntries.clear();
+      widget.selectedEntries.forEach((element) {
+        this.selectedEntries.add(element);
+      });
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +110,7 @@ class _PoeModSelectorState extends State<PoeModSelector> {
             SizedBox(width: 40,child: TextField(
               controller: min,
               decoration: InputDecoration(labelText: "Min"),
-              onSubmitted: (value) {
+              onChanged: (value) {
                 try {
                   entry.value.min = int.parse(value);
                 } catch(e) {
@@ -109,7 +121,7 @@ class _PoeModSelectorState extends State<PoeModSelector> {
             SizedBox(width: 40,child: TextField(
               controller: max,
               decoration: InputDecoration(labelText: "Max"),
-              onSubmitted: (value) {
+              onChanged: (value) {
                 try {
                   entry.value.max = int.parse(value);
                 } catch(e) {
