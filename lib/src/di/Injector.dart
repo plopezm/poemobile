@@ -20,10 +20,18 @@ class Injector {
 
   Injector._internal();
 
+  CurrencyRepository _currencyRepository;
+  MarketRepository _marketRepository;
+
+
   CurrencyRepository get currencyRepository {
+    if (this._currencyRepository != null) {
+      return this._currencyRepository;
+    }
     switch(_env) {
       case Environment.PROD:
-        return new CurrencyRepositoryImpl();
+        this._currencyRepository = new CurrencyRepositoryImpl();
+        return this._currencyRepository;
       case Environment.MOCK:
         return null;
     }
@@ -31,9 +39,13 @@ class Injector {
   }
 
   MarketRepository get marketRepository {
+    if (this._marketRepository != null) {
+      return this._marketRepository;
+    }
     switch(_env) {
       case Environment.PROD:
-        return new MarketRepositoryImpl();
+        this._marketRepository =  new MarketRepositoryImpl();
+        return this._marketRepository;
       case Environment.MOCK:
         return null;
     }

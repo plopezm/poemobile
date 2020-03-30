@@ -81,36 +81,39 @@ class SocketForm extends StatelessWidget {
     PoeMarketSocketFiltersSpec sockets;
     PoeMarketSocketFiltersSpec links;
 
-    if (!(socketRController.text.isEmpty
-        && socketGController.text.isEmpty
-        && socketBController.text.isEmpty
-        && socketWController.text.isEmpty
-        && socketMinController.text.isEmpty
-        && socketMaxController.text.isEmpty)){
+    if (!(socketRController.text == "0"
+        && socketGController.text == "0"
+        && socketBController.text == "0"
+        && socketWController.text == "0"
+        && socketMinController.text == "0"
+        && socketMaxController.text == "0")){
       sockets = PoeMarketSocketFiltersSpec(
-          r: int.parse(socketRController.text == "" ? "0" : socketRController.text),
-          g: int.parse(socketGController.text == "" ? "0" : socketGController.text),
-          b: int.parse(socketBController.text == "" ? "0" : socketBController.text),
-          w: int.parse(socketWController.text == "" ? "0" : socketWController.text),
-          min: int.parse(socketMinController.text == "" ? "0" : socketMinController.text),
-          max: int.parse(socketMaxController.text == "" ? "0" : socketMaxController.text)
+          r: int.parse(socketRController.text),
+          g: int.parse(socketGController.text),
+          b: int.parse(socketBController.text),
+          w: int.parse( socketWController.text),
+          min: int.parse(socketMinController.text),
+          max: int.parse(socketMaxController.text)
       );
     }
 
-    if (!(linkRController.text.isEmpty
-        && linkGController.text.isEmpty
-        && linkBController.text.isEmpty
-        && linkWController.text.isEmpty
-        && linkMinController.text.isEmpty
-        && linkMaxController.text.isEmpty)){
+    if (!( linkRController.text == "0"
+        && linkGController.text == "0"
+        && linkBController.text == "0"
+        && linkWController.text == "0"
+        && linkMinController.text == "0"
+        && linkMaxController.text == "0")){
       links = PoeMarketSocketFiltersSpec(
-          r: int.parse(linkRController.text == "" ? "0" : linkRController.text),
-          g: int.parse(linkGController.text == "" ? "0" : linkGController.text),
-          b: int.parse(linkBController.text == "" ? "0" : linkBController.text),
-          w: int.parse(linkWController.text == "" ? "0" : linkWController.text),
-          min: int.parse(linkMinController.text == "" ? "0" : linkMinController.text),
-          max: int.parse(linkMaxController.text == "" ? "0" : linkMaxController.text)
+          r: int.parse(linkRController.text),
+          g: int.parse(linkGController.text),
+          b: int.parse(linkBController.text),
+          w: int.parse(linkWController.text),
+          min: int.parse(linkMinController.text),
+          max: int.parse(linkMaxController.text)
       );
+    }
+    if (sockets == null && links == null) {
+      return null;
     }
     return PoeMarketSocketFilters(
       sockets: sockets,
