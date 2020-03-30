@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:poemobile/src/pages/currency_page.dart';
-import 'package:poemobile/src/pages/home_page.dart';
-import 'package:poemobile/src/pages/market_page.dart';
+import 'package:poemobile/src/pages/CurrencyPage.dart';
+import 'package:poemobile/src/pages/HomePage.dart';
+import 'package:poemobile/src/pages/MarketPage.dart';
 
 class PoeMobileApp extends StatelessWidget {
   @override

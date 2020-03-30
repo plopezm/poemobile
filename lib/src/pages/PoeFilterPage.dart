@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:poemobile/src/components/PoeModSelector.dart';
-import 'package:poemobile/src/components/socket_form.dart';
+import 'package:poemobile/src/components/SocketForm.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
 import 'package:poemobile/src/entities/Stats.dart';

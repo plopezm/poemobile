@@ -1,13 +1,13 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/pablolm/AndroidStudioProjects/poe_mobile/lib/src/pages/poe_filter_page.dart';
-import 'package:poemobile/src/components/poe_item_list.dart';
+import 'file:///C:/Users/pablolm/AndroidStudioProjects/poe_mobile/lib/src/pages/PoeFilterPage.dart';
+import 'package:poemobile/src/components/PoeItemList.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
 import 'package:poemobile/src/entities/PoePictureItem.dart';
-import 'package:poemobile/src/pages/camera_page.dart';
-import 'package:poemobile/src/providers/ml_scanner_utils.dart';
+import 'package:poemobile/src/pages/CameraPreviewPage.dart';
+import 'package:poemobile/src/providers/PictureMLScanner.dart';
 import 'package:poemobile/src/repositories/MarketRepository.dart';
 
 class MarketPage extends StatefulWidget {
@@ -119,7 +119,7 @@ class _MarketPageState extends State<MarketPage> {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => MLCameraCatcher(
+            builder: (context) => CameraPreviewPage(
               camera: description,
               onPictureTaken: _onPictureInfo,
             )));

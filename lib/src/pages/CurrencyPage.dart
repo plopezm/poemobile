@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poemobile/src/components/data_table.dart';
+import 'package:poemobile/src/components/DataTable.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/Currency.dart';
 import 'package:poemobile/src/repositories/CurrencyRepository.dart';

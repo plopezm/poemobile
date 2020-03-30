@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:poemobile/src/components/data_table.dart';
+import 'package:poemobile/src/components/DataTable.dart';
 import 'package:poemobile/src/entities/MarketResult.dart';
 
 const Map<String, MaterialColor> colors = {

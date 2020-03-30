@@ -1,8 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:poemobile/src/pages/currency_page.dart';
-import 'package:poemobile/src/providers/main_menu_provider.dart';
+import 'package:poemobile/src/pages/CurrencyPage.dart';
+import 'package:poemobile/src/providers/MainMenuProvider.dart';
 
 class HomePage extends StatelessWidget {
 

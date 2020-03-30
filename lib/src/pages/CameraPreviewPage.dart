@@ -1,21 +1,21 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'package:poemobile/src/providers/ml_scanner_utils.dart';
+import 'package:poemobile/src/providers/PictureMLScanner.dart';
 
-class MLCameraCatcher extends StatefulWidget {
+class CameraPreviewPage extends StatefulWidget {
   final CameraDescription camera;
   final Function(VisionText) onPictureTaken;
 
-  MLCameraCatcher({@required this.camera, @required this.onPictureTaken});
+  CameraPreviewPage({@required this.camera, @required this.onPictureTaken});
 
   @override
   State<StatefulWidget> createState() {
-    return _MLCameraCatcherState();
+    return _CameraPreviewPageState();
   }
 }
 
-class _MLCameraCatcherState extends State<MLCameraCatcher> {
+class _CameraPreviewPageState extends State<CameraPreviewPage> {
   CameraController _cameraController;
   Future<void> _initializeCameraControllerFuture;
 
