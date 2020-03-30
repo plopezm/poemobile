@@ -25,7 +25,7 @@ class _MarketPageState extends State<MarketPage> {
   PoeMarketQuery query = PoeMarketQuery(
       query: PoeMarketQuerySpec(
         term: "",
-        status: PoeMarketQueryStatus(option: "online"),
+        status: PoeMarketQueryStatus(option: "any"),
         stats: <PoeMarketStatsFilter>[
           PoeMarketStatsFilter(
               type: "and", filters: <PoeMarketStatsFilterSpec>[])

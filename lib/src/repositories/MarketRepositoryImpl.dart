@@ -35,10 +35,12 @@ class MarketRepositoryImpl extends MarketRepository {
     // Getting real info
     int end = offset + size;
     String idsToFetch = indexResult.result
-        .sublist(offset, end >= indexResult.total ? indexResult.total - 1 : end)
+        .sublist(offset, end >= indexResult.total ? indexResult.total : end)
         .join(",");
+
+    final String fetchUrl = 'https://www.pathofexile.com/api/trade/fetch/$idsToFetch?query=${indexResult.id}';
     response = await http.get(
-        'https://www.pathofexile.com/api/trade/fetch/$idsToFetch?query=${indexResult.id}',
+        fetchUrl,
         headers: <String, String>{"Content-Type": "application/json"});
     if (response.statusCode != 200) {
       // If that call was not successful, throw an error.

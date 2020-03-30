@@ -15,6 +15,9 @@ class PoePictureItem {
     if (visionTexts == null || visionTexts.blocks == null) return;
     visionTexts.blocks.forEach((visionText) {
       if (visionText.lines == null) return;
+      if (visionText.lines.length < 3 || !this.isIgnorableProperty(visionText.text)) {
+        return;
+      }
       visionText.lines.forEach((line) {
         print(line.text);
         if (this.isIgnorableProperty(line.text)) {
