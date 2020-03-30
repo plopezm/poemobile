@@ -38,7 +38,9 @@ class _CurrencyPageState extends State<CurrencyPage> {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
-            return new Text('Loading...');
+            return new Container(
+                child: Center(child: CircularProgressIndicator())
+            );
           default:
             if (snapshot.hasError) {
               return new Text('Error: ${snapshot.error}');

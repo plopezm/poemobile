@@ -100,7 +100,8 @@ class _MarketPageState extends State<MarketPage> {
             case ConnectionState.none:
             case ConnectionState.waiting:
               return new Container(
-                  child: Text('Loading...'), padding: EdgeInsets.all(12.0));
+                  child: Center(child: CircularProgressIndicator())
+              );
             default:
               if (snapshot.hasError) {
                 return new Text('Error: ${snapshot.error}');

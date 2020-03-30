@@ -26,7 +26,7 @@ class _CameraPreviewPageState extends State<CameraPreviewPage> {
   @override
   void initState() {
     super.initState();
-    _cameraController = CameraController(widget.camera, ResolutionPreset.high);
+    _cameraController = CameraController(widget.camera, ResolutionPreset.max);
     _initializeCameraControllerFuture = _cameraController.initialize();
   }
 
