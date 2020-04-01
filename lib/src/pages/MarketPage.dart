@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:poemobile/src/components/PoeItemList.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
-import 'package:poemobile/src/entities/MarketResult.dart';
-import 'package:poemobile/src/entities/Pagination.dart';
 import 'package:poemobile/src/entities/PoePictureItem.dart';
 import 'package:poemobile/src/pages/CameraPreviewPage.dart';
 import 'package:poemobile/src/providers/PictureMLScanner.dart';
