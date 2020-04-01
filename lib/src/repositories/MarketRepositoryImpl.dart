@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:poemobile/src/entities/MarketQuery.dart';
 import 'package:poemobile/src/entities/MarketResult.dart';
+import 'package:poemobile/src/entities/Pagination.dart';
 import 'package:poemobile/src/entities/Stats.dart';
 import 'package:poemobile/src/repositories/MarketRepository.dart';
 
@@ -11,7 +12,7 @@ class MarketRepositoryImpl extends MarketRepository {
   List<Stats> cachedStats;
 
   @override
-  Future<List<ItemSearchResult>> fetchItem(String term,
+  Future<Page<ItemSearchResult>> fetchItem(String term,
       {@required PoeMarketQuery query, int offset = 0, int size = 10}) async {
     query.query.term = term;
     // Getting indexes
@@ -29,7 +30,7 @@ class MarketRepositoryImpl extends MarketRepository {
     _IndexResult indexResult = _IndexResult.fromJson(parsedIndexResult);
 
     if (indexResult.total == 0) {
-      return ItemSearchResult.listFromJson([]);
+      return Page(total: 0, offset: offset, content: ItemSearchResult.listFromJson([]));
     }
 
     // Getting real info
@@ -47,7 +48,11 @@ class MarketRepositoryImpl extends MarketRepository {
       throw Exception('Failed getting results: ${response.body}');
     }
     final parsedResult = json.decode(response.body);
-    return ItemSearchResult.listFromJson(parsedResult["result"]);
+    return Page(
+        total: indexResult.total,
+        offset: offset,
+        content: ItemSearchResult.listFromJson(parsedResult["result"])
+    );
   }
 
   @override

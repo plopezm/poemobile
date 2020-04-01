@@ -1,7 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/pablolm/AndroidStudioProjects/poe_mobile/lib/src/pages/PoeFilterPage.dart';
 import 'package:poemobile/src/components/PoeItemList.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
@@ -97,7 +96,7 @@ class _MarketPageState extends State<MarketPage> {
     );
   }
   FutureBuilder _getFutureBuilder() {
-    return FutureBuilder(
+    return FutureBuilder<Page<ItemSearchResult>>(
         future: this.marketRepository.fetchItem(this.searchTerm.text, query: query),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
@@ -111,7 +110,7 @@ class _MarketPageState extends State<MarketPage> {
                 return new Text('Error: ${snapshot.error}');
               } else {
                 //return _createListView(context, snapshot);
-                return Container(child: PoeItemListComponent(snapshot.data));
+                return Container(child: PoeItemListComponent(snapshot.data.content));
               }
           }
         });
