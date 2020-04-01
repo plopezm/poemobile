@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:poemobile/src/components/PoeItemList.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
+import 'package:poemobile/src/entities/MarketResult.dart';
+import 'package:poemobile/src/entities/Pagination.dart';
 import 'package:poemobile/src/entities/PoePictureItem.dart';
 import 'package:poemobile/src/pages/CameraPreviewPage.dart';
 import 'package:poemobile/src/providers/PictureMLScanner.dart';
@@ -20,6 +22,7 @@ class MarketPage extends StatefulWidget {
 
 class _MarketPageState extends State<MarketPage> {
   MarketRepository marketRepository = Injector().marketRepository;
+  Page<ItemSearchResult> currentResult = Page(content: [], offset: 0, pageSize: 10, total: 0);
 
   // For searcher
   TextEditingController searchTerm = TextEditingController(text: "");
@@ -41,6 +44,12 @@ class _MarketPageState extends State<MarketPage> {
         title: Text("Market"),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.camera_alt),
+            onPressed: () {
+              this._initializeCamera();
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.format_list_bulleted),
             color: Colors.white,
             onPressed: () async {
@@ -56,16 +65,10 @@ class _MarketPageState extends State<MarketPage> {
             icon: Icon(Icons.search),
             color: Colors.white,
             onPressed: () {
-              this.setState(() {});
+              this._updateItemList();
             },
           )
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera_alt),
-        onPressed: () {
-          this._initializeCamera();
-        },
       ),
       body: new Container(
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
@@ -77,12 +80,38 @@ class _MarketPageState extends State<MarketPage> {
                     children: <Widget>[
                       TextField(
                         controller: this.searchTerm,
-                        decoration: InputDecoration(labelText: "Search"),
+                        decoration: InputDecoration(
+                          labelText: "Search",
+                          suffixIcon: IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                this.searchTerm.clear();
+                              }
+                          ),
+                        ),
                       )
                     ],
                   ),
                   Expanded(
-                    child: _getFutureBuilder(),
+                    //child: _getFutureBuilder(),
+                    child: Container(child: PoeItemListComponent(this.currentResult.content, () {
+                      if (this.currentResult == null
+                          || this.currentResult.queryId == null || this.currentResult.queryId == ""
+                          || this.currentResult.total == 0
+                          || this.currentResult.offset + this.currentResult.pageSize == this.currentResult.total) {
+                        return;
+                      }
+                      this.marketRepository.fetchItemByQueryId(
+                          queryId: this.currentResult.queryId,
+                          offset: this.currentResult.offset+this.currentResult.pageSize
+                      ).then((value) {
+                        this.setState(() {
+                          this.currentResult.content.addAll(value.content);
+                          this.currentResult.offset = value.offset;
+                          this.currentResult.pageSize = value.pageSize;
+                        });
+                      });
+                    })),
                   ),
                 ],
               ),
@@ -92,26 +121,6 @@ class _MarketPageState extends State<MarketPage> {
             ),
           )),
     );
-  }
-  FutureBuilder _getFutureBuilder() {
-    return FutureBuilder<Page<ItemSearchResult>>(
-        future: this.marketRepository.fetchItem(this.searchTerm.text, query: query),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return new Container(
-                  child: Center(child: CircularProgressIndicator())
-              );
-            default:
-              if (snapshot.hasError) {
-                return new Text('Error: ${snapshot.error}');
-              } else {
-                //return _createListView(context, snapshot);
-                return Container(child: PoeItemListComponent(snapshot.data.content));
-              }
-          }
-        });
   }
 
   void _initializeCamera() async {
@@ -129,11 +138,19 @@ class _MarketPageState extends State<MarketPage> {
 
   void _onPictureInfo(VisionText vt) {
     this.marketRepository.fetchStats().then((entries) {
-      PoePictureItem pictureItem = PoePictureItem(entries, vt);
-      this.searchTerm.text = "${pictureItem.title} ${pictureItem.subtitle == null ? "" : pictureItem.subtitle}".trim();
-      this.query.query.stats.first.filters.clear();
-      this.query.query.stats.first.filters.addAll(pictureItem.mods);
-      setState(() {});
+      setState(() {
+        PoePictureItem pictureItem = PoePictureItem(entries, vt);
+        this.searchTerm.text = "${pictureItem.title} ${pictureItem.subtitle == null ? "" : pictureItem.subtitle}".trim();
+        this.query.query.stats.first.filters.clear();
+        this.query.query.stats.first.filters.addAll(pictureItem.mods);
+      });
+      this._updateItemList();
     });
+  }
+
+  void _updateItemList() {
+    this.marketRepository
+        .fetchItem(this.searchTerm.text, query: query)
+        .then((value) => this.setState(() => this.currentResult = value));
   }
 }

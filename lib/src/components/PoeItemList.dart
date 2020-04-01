@@ -23,8 +23,9 @@ const Map<String, String> currencyMap = {
 class PoeItemListComponent extends StatelessWidget {
 
   final List<ItemSearchResult> result;
+  final void Function() onLastItemReached;
 
-  const PoeItemListComponent(this.result);
+  const PoeItemListComponent(this.result, this.onLastItemReached);
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +55,7 @@ class PoeItemListComponent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _getMods(element.item.explicitMods))))
       ],
+      onLastElementReached: this.onLastItemReached,
     );
   }
 
