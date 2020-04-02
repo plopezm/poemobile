@@ -153,6 +153,7 @@ class PoeItemParser {
     MapEntry<String,String>("Quiver", "armour.quiver"),
     MapEntry<String,String>("Bow", "weapon.bow"),
     MapEntry<String,String>("Claw", "weapon.claw"),
+    MapEntry<String,String>("Wand", "weapon.wand"),
     MapEntry<String,String>("Sceptre", "weapon.sceptre"),
     MapEntry<String,String>("Staff", "weapon.staff"),
     MapEntry<String,String>("One Handed Axe", "weapon.oneaxe"),
@@ -188,6 +189,8 @@ class PoeItemParser {
         return "weapon.twosword";
       case "fishing rod":
         return "weapon.rod";
+      case "wand":
+        return "weapon.wand";
       default:
         return "";
     }
