@@ -105,9 +105,6 @@ class _MarketPageState extends State<MarketPage> {
                           || this.currentResult.offset + this.currentResult.pageSize == this.currentResult.total) {
                         return;
                       }
-                      setState(() {
-                        this._loading = true;
-                      });
                       this.marketRepository.fetchItemByQueryId(
                           queryId: this.currentResult.queryId,
                           offset: this.currentResult.offset+this.currentResult.pageSize
@@ -116,7 +113,6 @@ class _MarketPageState extends State<MarketPage> {
                           this.currentResult.content.addAll(value.content);
                           this.currentResult.offset = value.offset;
                           this.currentResult.pageSize = value.pageSize;
-                          this._loading = false;
                         });
                       });
                     })),
