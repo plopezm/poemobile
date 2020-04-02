@@ -21,6 +21,7 @@ class MarketPage extends StatefulWidget {
 }
 
 class _MarketPageState extends State<MarketPage> {
+  bool _loading = false;
   MarketRepository marketRepository = Injector().marketRepository;
   Page<ItemSearchResult> currentResult = Page(content: [], offset: 0, pageSize: 10, total: 0);
 
@@ -65,12 +66,15 @@ class _MarketPageState extends State<MarketPage> {
             icon: Icon(Icons.search),
             color: Colors.white,
             onPressed: () {
+              setState(() {
+                this._loading = true;
+              });
               this._updateItemList();
             },
           )
         ],
       ),
-      body: new Container(
+      body: loading(new Container(
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
           child: Center(
             child: RefreshIndicator(
@@ -101,6 +105,9 @@ class _MarketPageState extends State<MarketPage> {
                           || this.currentResult.offset + this.currentResult.pageSize == this.currentResult.total) {
                         return;
                       }
+                      setState(() {
+                        this._loading = true;
+                      });
                       this.marketRepository.fetchItemByQueryId(
                           queryId: this.currentResult.queryId,
                           offset: this.currentResult.offset+this.currentResult.pageSize
@@ -109,6 +116,7 @@ class _MarketPageState extends State<MarketPage> {
                           this.currentResult.content.addAll(value.content);
                           this.currentResult.offset = value.offset;
                           this.currentResult.pageSize = value.pageSize;
+                          this._loading = false;
                         });
                       });
                     })),
@@ -119,14 +127,16 @@ class _MarketPageState extends State<MarketPage> {
                 this.setState(() {});
               },
             ),
-          )),
+          ))),
     );
   }
 
   void _initializeCamera() async {
     final CameraDescription description =
     await ScannerUtils.getCamera(CameraLensDirection.back);
-
+    setState(() {
+      this._loading = true;
+    });
     await Navigator.push(
         context,
         MaterialPageRoute(
@@ -156,6 +166,17 @@ class _MarketPageState extends State<MarketPage> {
   void _updateItemList() {
     this.marketRepository
         .fetchItem(this.searchTerm.text, query: query)
-        .then((value) => this.setState(() => this.currentResult = value));
+        .then((value) => this.setState(() {
+          this.currentResult = value;
+          this._loading = false;
+        }));
+  }
+
+  Widget loading(Widget widget) {
+    if (this._loading) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return widget;
+    }
   }
 }
