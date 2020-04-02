@@ -4,16 +4,29 @@ class DynamicDataTableComponent<T> extends StatelessWidget {
   final List<String> tableHeaders;
   final List<T> rows;
   final List<DataCell> Function(T element) onRowFormat;
+  final void Function() onLastElementReached;
 
   const DynamicDataTableComponent(
       {@required this.tableHeaders,
       @required this.rows,
-      @required this.onRowFormat});
+      @required this.onRowFormat,
+      this.onLastElementReached});
 
   @override
   Widget build(BuildContext context) {
+    ScrollController _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (this.onLastElementReached == null) {
+        return;
+      }
+      if (_scrollController.position.maxScrollExtent == _scrollController.position.pixels) {
+        this.onLastElementReached();
+      }
+    });
+
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
+        controller: _scrollController,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: new DataTable(

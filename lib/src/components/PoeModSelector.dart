@@ -112,6 +112,7 @@ class _PoeModSelectorState extends State<PoeModSelector> {
             Expanded(child: SizedBox()),
             SizedBox(width: 40,child: TextField(
               controller: min,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Min"),
               onChanged: (value) {
                 try {
@@ -123,6 +124,7 @@ class _PoeModSelectorState extends State<PoeModSelector> {
             )),
             SizedBox(width: 40,child: TextField(
               controller: max,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Max"),
               onChanged: (value) {
                 try {

@@ -60,6 +60,13 @@ class PoeMarketQuerySpec {
     }
     filters.putIfAbsent(filter.getFilterId(), () => filter);
   }
+
+  void removeDynamicFilter(String key) {
+    if (filters == null) {
+      return;
+    }
+    filters.remove(key);
+  }
 }
 
 class PoeMarketStatsFilter {
@@ -145,6 +152,11 @@ abstract class PoeDynamicFilter {
   Map<String, dynamic> toJson();
 }
 
+abstract class PoeDynamicSubFilter {
+  String getFilterId();
+  Map<String, dynamic> toJson();
+}
+
 class PoeMarketSocketFilters extends PoeDynamicFilter {
   bool disabled;
   PoeMarketSocketFiltersSpec sockets;
@@ -205,4 +217,56 @@ class PoeMarketSocketFiltersSpec {
     }
     return jsonResult;
   }
+}
+
+class PoeMarketTypeFilter extends PoeDynamicFilter {
+  bool disabled;
+  Map<String, PoeDynamicSubFilter> filters;
+  PoeMarketTypeFilter({this.filters, this.disabled = false});
+
+  @override
+  String getFilterId() {
+    return "type_filters";
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> result = {};
+    if (filters != null && filters.isNotEmpty) {
+      result.putIfAbsent(
+          "filters",
+              () => filters.map((key, value) => MapEntry(key, value.toJson()))
+      );
+    }
+    return result;
+  }
+
+  void addFilter(PoeDynamicSubFilter filter) {
+    if (filter == null) {
+      return;
+    }
+    if (filters == null) {
+      filters = {};
+    }
+    filters.putIfAbsent(filter.getFilterId(), () => filter);
+  }
+
+}
+
+class PoeMarketTypeFilterSpecCategory extends PoeDynamicSubFilter {
+  String option;
+
+  PoeMarketTypeFilterSpecCategory(this.option);
+
+  Map<String, dynamic> toJson() {
+    return {
+      "option": option
+    };
+  }
+
+  @override
+  String getFilterId() {
+    return "category";
+  }
+
 }

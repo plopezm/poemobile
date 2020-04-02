@@ -17,14 +17,16 @@ const Map<String, String> currencyMap = {
   "chisel": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyMapQuality.png?w=1&h=1&scale=1",
   "exa": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToRare.png?w=1&h=1&scale=1",
   "chrom": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketColours.png?w=1&h=1&scale=1",
-  "alt": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollMagic.png?w=1&h=1&scale=1"
+  "alt": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollMagic.png?w=1&h=1&scale=1",
+  "blessed": "https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyImplicitMod.png?w=1&h=1&scale=1&v=472eeef04846d8a25d65b3d4f9ceecc8"
 };
 
 class PoeItemListComponent extends StatelessWidget {
 
   final List<ItemSearchResult> result;
+  final void Function() onLastItemReached;
 
-  const PoeItemListComponent(this.result);
+  const PoeItemListComponent(this.result, this.onLastItemReached);
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,7 @@ class PoeItemListComponent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _getMods(element.item.explicitMods))))
       ],
+      onLastElementReached: this.onLastItemReached,
     );
   }
 
