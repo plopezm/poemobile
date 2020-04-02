@@ -60,6 +60,13 @@ class PoeMarketQuerySpec {
     }
     filters.putIfAbsent(filter.getFilterId(), () => filter);
   }
+
+  void removeDynamicFilter(String key) {
+    if (filters == null) {
+      return;
+    }
+    filters.remove(key);
+  }
 }
 
 class PoeMarketStatsFilter {

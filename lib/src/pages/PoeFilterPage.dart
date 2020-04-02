@@ -48,9 +48,12 @@ class PoeFilterPage extends StatelessWidget {
               Text("Item Type", textAlign: TextAlign.start, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
               Divider(),
               TextFieldSelect<String>(
-                dropdownItems: PoeItemParser.availableItemTypes,
+                inputDropdownItems: PoeItemParser.availableItemTypes,
                 selectedValue: _getSelectedTypeValue(),
                 onSelectedElement: (value) {
+                  if (value == null) {
+                    this.marketQuery.query.removeDynamicFilter("type_filters");
+                  }
                   PoeMarketTypeFilter typeFilter = PoeMarketTypeFilter();
                   typeFilter.addFilter(PoeMarketTypeFilterSpecCategory(value));
                   this.marketQuery.query.addDynamicFilter(typeFilter);
