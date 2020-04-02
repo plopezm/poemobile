@@ -20,7 +20,6 @@ class DynamicDataTableComponent<T> extends StatelessWidget {
         return;
       }
       if (_scrollController.position.maxScrollExtent == _scrollController.position.pixels) {
-        print("Last item reached!!");
         this.onLastElementReached();
       }
     });

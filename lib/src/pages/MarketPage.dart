@@ -137,12 +137,17 @@ class _MarketPageState extends State<MarketPage> {
   }
 
   void _onPictureInfo(VisionText vt) {
-    this.marketRepository.fetchStats().then((entries) {
+    this.marketRepository.fetchStats().then((entries) async {
+      PoePictureItem pictureItem = await PoeItemParser.getInstance().parseImage(vt);
       setState(() {
-        PoePictureItem pictureItem = PoePictureItem(entries, vt);
-        this.searchTerm.text = "${pictureItem.title} ${pictureItem.subtitle == null ? "" : pictureItem.subtitle}".trim();
+        this.searchTerm.text = "${pictureItem.title} ${pictureItem.base == null ? "" : pictureItem.base}".trim();
         this.query.query.stats.first.filters.clear();
         this.query.query.stats.first.filters.addAll(pictureItem.mods);
+        if (pictureItem.category != null && pictureItem.category.isNotEmpty) {
+          PoeMarketTypeFilter typeFilter = PoeMarketTypeFilter();
+          typeFilter.addFilter(PoeMarketTypeFilterSpecCategory(pictureItem.category));
+          this.query.query.addDynamicFilter(typeFilter);
+        }
       });
       this._updateItemList();
     });

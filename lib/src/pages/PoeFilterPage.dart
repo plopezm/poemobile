@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:poemobile/src/components/PoeModSelector.dart';
 import 'package:poemobile/src/components/SocketForm.dart';
+import 'package:poemobile/src/components/TextFieldSelect.dart';
 import 'package:poemobile/src/di/Injector.dart';
 import 'package:poemobile/src/entities/MarketQuery.dart';
+import 'package:poemobile/src/entities/PoePictureItem.dart';
 import 'package:poemobile/src/entities/Stats.dart';
 import 'package:poemobile/src/repositories/MarketRepository.dart';
 
@@ -21,6 +23,16 @@ class PoeFilterPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Market search filters"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () {
+              this.marketQuery.query.addDynamicFilter(socketForm.getSocketFilters());
+              this.onQueryChange(this.marketQuery);
+              Navigator.pop(context);
+            },
+          )
+        ],
       ),
       body: new Container(
         padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
@@ -33,6 +45,18 @@ class PoeFilterPage extends StatelessWidget {
               Divider(),
               socketForm,
               Divider(),
+              Text("Item Type", textAlign: TextAlign.start, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              Divider(),
+              TextFieldSelect<String>(
+                dropdownItems: PoeItemParser.availableItemTypes,
+                selectedValue: _getSelectedTypeValue(),
+                onSelectedElement: (value) {
+                  PoeMarketTypeFilter typeFilter = PoeMarketTypeFilter();
+                  typeFilter.addFilter(PoeMarketTypeFilterSpecCategory(value));
+                  this.marketQuery.query.addDynamicFilter(typeFilter);
+                },
+              ),
+              Divider(),
               Text("Mods", textAlign: TextAlign.start, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
               Divider(),
               _getFutureStats(),
@@ -40,20 +64,25 @@ class PoeFilterPage extends StatelessWidget {
             ],
           )),
       ),
-      floatingActionButton: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              child: Icon(Icons.save),
-              onPressed: () {
-                this.marketQuery.query.addDynamicFilter(socketForm.getSocketFilters());
-                this.onQueryChange(this.marketQuery);
-                Navigator.pop(context);
-              },
-            ),
-          ]),
     );
+  }
+
+  String _getSelectedTypeValue() {
+    if (this.marketQuery.query.filters == null) return null;
+
+    final PoeDynamicFilter poeDynamicFilter = this.marketQuery.query
+        .filters["type_filters"];
+
+    if (poeDynamicFilter == null) return null;
+    if (!(poeDynamicFilter is PoeMarketTypeFilter)) return null;
+
+    final poeMarketTypeFilter = poeDynamicFilter as PoeMarketTypeFilter;
+
+    if (poeMarketTypeFilter.filters == null) return null;
+    final poeDynamicSubFilter = poeMarketTypeFilter.filters["category"];
+    if (!(poeDynamicSubFilter is PoeMarketTypeFilterSpecCategory)) return null;
+    final poeMarketTypeFilterSpecCategory = poeDynamicSubFilter as PoeMarketTypeFilterSpecCategory;
+    return poeMarketTypeFilterSpecCategory.option;
   }
 
   Widget _getFutureStats() {
